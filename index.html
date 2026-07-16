@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abishek Kumar — On Air</title>
+<meta name="description" content="Abishek Kumar — Video creator, DJ, AI prompt engineer, chef, event leader. BSc Computer Science.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0D0F;
+  --ink-2:#141719;
+  --panel:#1A1E21;
+  --line: rgba(242,239,233,0.12);
+  --paper:#F2EFE9;
+  --paper-dim: rgba(242,239,233,0.62);
+  --amber:#FF9F1C;
+  --amber-dim: rgba(255,159,28,0.16);
+  --cyan:#2EC4B6;
+  --cyan-dim: rgba(46,196,182,0.16);
+  --red-rec:#FF4D4D;
+  --radius: 2px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:'Inter',sans-serif;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--amber);color:var(--ink);}
+
+.display{font-family:'Anton',sans-serif; font-weight:400; letter-spacing:0.01em; text-transform:uppercase;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+}
+
+a{color:inherit;}
+img{max-width:100%;display:block;}
+
+/* ===== Grain / noise overlay ===== */
+.grain{
+  position:fixed; inset:0; z-index:999; pointer-events:none;
+  opacity:0.04; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ===== Top bar ===== */
+.topbar{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 5vw;
+  background:linear-gradient(to bottom, rgba(11,13,15,0.92), transparent);
+  backdrop-filter:blur(2px);
+}
+.brand{display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em;}
+.rec-dot{
+  width:8px; height:8px; border-radius:50%; background:var(--red-rec);
+  box-shadow:0 0 8px var(--red-rec);
+  animation:pulse-rec 1.6s ease-in-out infinite;
+}
+@keyframes pulse-rec{
+  0%,100%{opacity:1; transform:scale(1);}
+  50%{opacity:0.35; transform:scale(0.8);}
+}
+.navlinks{display:flex; gap:28px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase;}
+.navlinks a{text-decoration:none; color:var(--paper-dim); position:relative; padding-bottom:4px; transition:color 0.25s;}
+.navlinks a:hover, .navlinks a:focus-visible{color:var(--amber);}
+.navlinks a::after{
+  content:""; position:absolute; left:0; bottom:0; height:1px; width:0%;
+  background:var(--amber); transition:width 0.3s ease;
+}
+.navlinks a:hover::after{width:100%;}
+@media (max-width:760px){ .navlinks{display:none;} }
+
+/* ===== Hero ===== */
+.hero{
+  min-height:100svh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:120px 5vw 60px;
+  position:relative;
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 15%, var(--amber-dim), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 5% 90%, var(--cyan-dim), transparent 60%);
+  pointer-events:none;
+}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--amber); display:flex; align-items:center; gap:10px; margin-bottom:24px;
+  opacity:0; animation:rise 0.7s ease forwards; animation-delay:0.1s;
+}
+.eyebrow .bar{width:32px; height:1px; background:var(--amber);}
+.hero h1{
+  font-size:clamp(3.2rem, 11vw, 8.5rem);
+  line-height:0.88;
+  letter-spacing:-0.01em;
+  opacity:0; animation:rise 0.8s ease forwards; animation-delay:0.25s;
+}
+.hero h1 .last{color:var(--amber);}
+.hero-sub{
+  margin-top:26px; max-width:640px;
+  font-size:clamp(1rem,2.2vw,1.25rem); color:var(--paper-dim); font-weight:400; line-height:1.6;
+  opacity:0; animation:rise 0.8s ease forwards; animation-delay:0.42s;
+}
+.hero-sub strong{color:var(--paper); font-weight:600;}
+.hero-actions{
+  margin-top:38px; display:flex; gap:16px; flex-wrap:wrap;
+  opacity:0; animation:rise 0.8s ease forwards; animation-delay:0.58s;
+}
+@keyframes rise{ from{opacity:0; transform:translateY(22px);} to{opacity:1; transform:translateY(0);} }
+
+.btn{
+  font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.05em; text-transform:uppercase;
+  padding:15px 26px; border-radius:var(--radius); text-decoration:none; cursor:pointer;
+  border:1px solid transparent; transition:transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, color .25s ease;
+  display:inline-flex; align-items:center; gap:10px;
+}
+.btn-solid{background:var(--amber); color:var(--ink); font-weight:700;}
+.btn-solid:hover{transform:translateY(-3px); background:#ffb347;}
+.btn-ghost{border-color:var(--line); color:var(--paper);}
+.btn-ghost:hover{border-color:var(--cyan); color:var(--cyan); transform:translateY(-3px);}
+
+/* Hero EQ visual */
+.hero-eq{
+  position:absolute; right:5vw; bottom:60px; display:flex; align-items:flex-end; gap:6px; height:120px;
+  opacity:0; animation:rise 1s ease forwards; animation-delay:0.75s;
+}
+@media (max-width:900px){ .hero-eq{ position:static; margin-top:50px; height:70px; } }
+.hero-eq .bar-el{
+  width:7px; background:linear-gradient(to top, var(--amber), var(--cyan));
+  border-radius:2px; animation:eqmove 1.2s ease-in-out infinite;
+}
+@keyframes eqmove{
+  0%,100%{transform:scaleY(0.3);}
+  50%{transform:scaleY(1);}
+}
+.hero-eq .bar-el{transform-origin:bottom;}
+
+.scroll-cue{
+  position:absolute; bottom:26px; left:5vw; font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--paper-dim); display:flex; align-items:center; gap:10px; letter-spacing:0.1em;
+}
+.scroll-cue .line{width:1px; height:34px; background:linear-gradient(var(--amber), transparent); animation:scrolldown 1.8s ease-in-out infinite;}
+@keyframes scrolldown{ 0%{opacity:0.2;} 50%{opacity:1;} 100%{opacity:0.2;} }
+
+/* ===== Section shell ===== */
+section{padding:120px 5vw; position:relative; border-bottom:1px solid var(--line);}
+.section-head{display:flex; align-items:baseline; gap:18px; margin-bottom:56px; flex-wrap:wrap;}
+.section-num{font-family:'JetBrains Mono',monospace; color:var(--amber); font-size:13px;}
+.section-title{font-size:clamp(2.2rem,5vw,3.6rem); line-height:1;}
+.reveal{opacity:0; transform:translateY(36px); transition:opacity 0.8s ease, transform 0.8s ease;}
+.reveal.is-visible{opacity:1; transform:translateY(0);}
+
+/* ===== About ===== */
+.about-grid{display:grid; grid-template-columns: 1.1fr 0.9fr; gap:70px; align-items:start;}
+@media (max-width:860px){ .about-grid{grid-template-columns:1fr;} }
+.about-text p{font-size:1.08rem; line-height:1.85; color:var(--paper-dim); margin-bottom:20px;}
+.about-text strong{color:var(--paper); font-weight:600;}
+.badge-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:28px;}
+.badge{
+  font-family:'JetBrains Mono',monospace; font-size:12px; padding:9px 14px; border:1px solid var(--line);
+  border-radius:var(--radius); color:var(--paper-dim); letter-spacing:0.03em;
+}
+.spec-card{
+  background:var(--panel); border:1px solid var(--line); padding:32px;
+  position:relative;
+}
+.spec-card::before{
+  content:"PROFILE"; position:absolute; top:-11px; left:24px; background:var(--ink);
+  padding:0 8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.15em; color:var(--cyan);
+}
+.spec-row{display:flex; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--line); font-family:'JetBrains Mono',monospace; font-size:13px;}
+.spec-row:last-child{border-bottom:none;}
+.spec-row .k{color:var(--paper-dim);}
+.spec-row .v{color:var(--paper); text-align:right;}
+
+/* ===== Mixing console — skills ===== */
+.console{
+  background:var(--panel); border:1px solid var(--line); padding:44px 34px;
+}
+.channels{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:26px 18px;
+}
+.channel{display:flex; flex-direction:column; align-items:center; gap:14px;}
+.channel .label{
+  font-family:'JetBrains Mono',monospace; font-size:11.5px; text-align:center; color:var(--paper-dim);
+  letter-spacing:0.02em; min-height:32px; display:flex; align-items:center;
+}
+.fader-track{
+  width:6px; height:150px; background:var(--ink-2); border-radius:4px; position:relative;
+  border:1px solid var(--line);
+}
+.fader-fill{
+  position:absolute; bottom:0; left:0; width:100%; border-radius:4px;
+  background:linear-gradient(to top, var(--cyan), var(--amber));
+  transition:height 1.4s cubic-bezier(.16,1,.3,1);
+  height:0%;
+}
+.channel.is-visible .fader-fill{ /* set via inline style var */ height:var(--lvl); }
+.fader-knob{
+  position:absolute; left:50%; transform:translateX(-50%);
+  width:22px; height:12px; background:var(--paper); border-radius:2px;
+  bottom:0; transition:bottom 1.4s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 2px 6px rgba(0,0,0,0.4);
+}
+.channel.is-visible .fader-knob{bottom:var(--lvl);}
+.channel .pct{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--amber);}
+
+/* Soft skills - signal chain */
+.chain{margin-top:70px;}
+.chain-list{display:flex; flex-direction:column;}
+.chain-item{
+  display:grid; grid-template-columns: 90px 1fr; gap:24px; align-items:center;
+  padding:22px 0; border-top:1px solid var(--line);
+}
+.chain-list .chain-item:last-child{border-bottom:1px solid var(--line);}
+.chain-item .tag{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--cyan);}
+.chain-item h3{font-size:1.3rem; font-weight:600; margin-bottom:4px;}
+.chain-item p{color:var(--paper-dim); font-size:0.95rem; line-height:1.6;}
+.chain-item .meter{
+  width:100%; height:3px; background:var(--ink-2); margin-top:12px; position:relative; overflow:hidden;
+}
+.chain-item .meter span{
+  position:absolute; left:-40%; top:0; height:100%; width:40%;
+  background:linear-gradient(90deg, transparent, var(--amber), transparent);
+  animation:vu 2.4s linear infinite;
+}
+@keyframes vu{ 0%{left:-40%;} 100%{left:100%;} }
+
+/* ===== Off-air / hobbies ===== */
+.reel-wrap{overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:22px 0; margin-bottom:60px;}
+.reel-track{display:flex; gap:50px; width:max-content; animation:reel 26s linear infinite;}
+.reel-track span{
+  font-family:'Anton',sans-serif; text-transform:uppercase; font-size:1.6rem; color:var(--paper-dim);
+  display:flex; align-items:center; gap:20px; white-space:nowrap;
+}
+.reel-track span::after{content:"◆"; color:var(--amber); font-size:0.8rem;}
+@keyframes reel{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+.hobby-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
+.hobby-card{
+  background:var(--ink); padding:32px 26px; transition:background 0.35s ease;
+  display:flex; flex-direction:column; gap:14px; min-height:190px; justify-content:flex-end;
+}
+.hobby-card:hover{background:var(--ink-2);}
+.hobby-card .ico{font-size:1.7rem;}
+.hobby-card h4{font-size:1.15rem; font-weight:700;}
+.hobby-card p{font-size:0.88rem; color:var(--paper-dim); line-height:1.5;}
+
+/* ===== Contact ===== */
+.contact-wrap{display:grid; grid-template-columns:0.85fr 1.15fr; gap:70px;}
+@media (max-width:860px){ .contact-wrap{grid-template-columns:1fr;} }
+.contact-info .big{font-size:clamp(1.8rem,4vw,2.6rem); line-height:1.25; margin-bottom:30px;}
+.contact-info .big a{color:var(--amber); text-decoration:none; border-bottom:2px solid var(--amber-dim); transition:border-color 0.3s;}
+.contact-info .big a:hover{border-color:var(--amber);}
+.info-line{display:flex; gap:14px; align-items:center; margin-bottom:16px; font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--paper-dim);}
+.info-line .dot{width:6px; height:6px; background:var(--cyan); border-radius:50%; flex-shrink:0;}
+
+form{display:flex; flex-direction:column; gap:22px;}
+.field{position:relative;}
+.field label{
+  display:block; font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;
+  letter-spacing:0.1em; color:var(--paper-dim); margin-bottom:10px;
+}
+.field input, .field textarea{
+  width:100%; background:transparent; border:none; border-bottom:1px solid var(--line);
+  color:var(--paper); font-family:'Inter',sans-serif; font-size:1rem; padding:10px 2px;
+  outline:none; transition:border-color 0.3s ease; resize:vertical;
+}
+.field textarea{min-height:110px;}
+.field input:focus, .field textarea:focus{border-color:var(--amber);}
+.submit-row{display:flex; align-items:center; gap:18px; margin-top:6px;}
+.form-status{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--cyan);}
+
+footer{
+  padding:40px 5vw; display:flex; justify-content:space-between; align-items:center;
+  font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--paper-dim); flex-wrap:wrap; gap:12px;
+}
+footer .socials{display:flex; gap:20px;}
+footer a{text-decoration:none; color:var(--paper-dim); transition:color 0.25s;}
+footer a:hover{color:var(--amber);}
+
+:focus-visible{outline:2px solid var(--amber); outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="brand"><span class="rec-dot"></span> A.KUMAR <span style="opacity:0.4">// ON AIR</span></div>
+  <nav class="navlinks">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#offair">Off&nbsp;Air</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" style="border-bottom:1px solid var(--line); padding-top:120px;">
+  <div class="eyebrow"><span class="bar"></span> BSc COMPUTER SCIENCE · CREATOR · MIXER OF THINGS</div>
+  <h1 class="display">ABISHEK<br>KUMAR<span class="last">.</span></h1>
+  <p class="hero-sub">I run every channel at once — <strong>code, camera and console</strong>. Behind the decks as a DJ, behind the lens as a video creator, behind the pass as a chef, and behind the prompt as an AI engineer. Currently mixing tech with taste, one project at a time.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn btn-solid">Book / Contact →</a>
+    <a href="#skills" class="btn btn-ghost">View the console</a>
+  </div>
+  <div class="hero-eq" aria-hidden="true"></div>
+  <div class="scroll-cue"><span class="line"></span> SCROLL</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-head reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title display">The Bio Track</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm <strong>Abishek Kumar</strong>, a Computer Science graduate who never settled for one lane. By day I write code, engineer prompts and build with AI. By night I'm on the decks with a DJ mixer, reading the room and keeping the energy up.</p>
+      <p>In between, I'm on set as a <strong>videographer and content creator</strong> — shooting, cutting and publishing stories. I've also spent time in <strong>leather craft</strong> and hands-on with <strong>Tally</strong> for accounts, so the practical, physical side of work is just as familiar as the screen.</p>
+      <p>Off the clock, I lead. I've run point as <strong>team leader for event management</strong>, coordinating people, timelines and chaos into something that works — and I bring the same instinct into the kitchen, where I cook as a hobbyist chef most days of the week.</p>
+      <div class="badge-row">
+        <span class="badge">BSc Computer Science</span>
+        <span class="badge">AI & Prompt Engineering</span>
+        <span class="badge">Event Leadership</span>
+      </div>
+    </div>
+    <div class="spec-card reveal">
+      <div class="spec-row"><span class="k">Name</span><span class="v">Abishek Kumar</span></div>
+      <div class="spec-row"><span class="k">Education</span><span class="v">BSc Computer Science</span></div>
+      <div class="spec-row"><span class="k">Core Roles</span><span class="v">Creator · DJ · Chef</span></div>
+      <div class="spec-row"><span class="k">Leadership</span><span class="v">Event Team Lead</span></div>
+      <div class="spec-row"><span class="k">Focus</span><span class="v">AI / Prompt Engineering</span></div>
+      <div class="spec-row"><span class="k">Status</span><span class="v" style="color:var(--cyan)">Available — Open to work</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-head reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title display">The Mixing Console</h2>
+  </div>
+
+  <div class="console reveal">
+    <p class="mono" style="font-size:12px; color:var(--paper-dim); margin-bottom:30px; letter-spacing:0.05em;">TECHNICAL CHANNELS — LEVEL SET FOR PLAYBACK</p>
+    <div class="channels" id="channels">
+      <div class="channel" style="--lvl:88%" data-lvl="88%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">88%</span><span class="label">HTML / CSS</span></div>
+      <div class="channel" style="--lvl:82%" data-lvl="82%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">82%</span><span class="label">JavaScript</span></div>
+      <div class="channel" style="--lvl:90%" data-lvl="90%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">90%</span><span class="label">Prompt Engineering</span></div>
+      <div class="channel" style="--lvl:85%" data-lvl="85%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">85%</span><span class="label">AI Tools</span></div>
+      <div class="channel" style="--lvl:92%" data-lvl="92%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">92%</span><span class="label">DJ Mixing</span></div>
+      <div class="channel" style="--lvl:80%" data-lvl="80%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">80%</span><span class="label">Videography</span></div>
+      <div class="channel" style="--lvl:78%" data-lvl="78%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">78%</span><span class="label">Content Creation</span></div>
+      <div class="channel" style="--lvl:70%" data-lvl="70%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">70%</span><span class="label">Tally</span></div>
+      <div class="channel" style="--lvl:65%" data-lvl="65%"><div class="fader-track"><div class="fader-fill"></div><div class="fader-knob"></div></div><span class="pct">65%</span><span class="label">Leather Tech</span></div>
+    </div>
+  </div>
+
+  <div class="chain reveal">
+    <p class="mono" style="font-size:12px; color:var(--paper-dim); margin-bottom:10px; letter-spacing:0.05em;">SIGNAL CHAIN — SOFT SKILLS</p>
+    <div class="chain-list">
+      <div class="chain-item">
+        <span class="tag">01 / LEAD</span>
+        <div><h3>Leadership</h3><p>Directing people and moving parts toward one outcome, calmly and on schedule.</p><div class="meter"><span></span></div></div>
+      </div>
+      <div class="chain-item">
+        <span class="tag">02 / FIX</span>
+        <div><h3>Problem Solving</h3><p>Breaking a messy situation into steps and working it through, live if I have to.</p><div class="meter"><span></span></div></div>
+      </div>
+      <div class="chain-item">
+        <span class="tag">03 / PLATE</span>
+        <div><h3>Cooking / Chef</h3><p>Reading a dish the way I read a mix — balance, timing, and taste.</p><div class="meter"><span></span></div></div>
+      </div>
+      <div class="chain-item">
+        <span class="tag">04 / RUN</span>
+        <div><h3>Event Team Lead</h3><p>Owning an event end to end — planning, people, and the moment it goes live.</p><div class="meter"><span></span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFF AIR / HOBBIES -->
+<section id="offair">
+  <div class="section-head reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title display">Off Air</h2>
+  </div>
+
+  <div class="reel-wrap reveal">
+    <div class="reel-track">
+      <span>BLOOD DONOR</span><span>CYCLIST</span><span>EXPLORER</span><span>HOME COOK</span><span>IDEA MACHINE</span><span>TRADER</span>
+      <span>BLOOD DONOR</span><span>CYCLIST</span><span>EXPLORER</span><span>HOME COOK</span><span>IDEA MACHINE</span><span>TRADER</span>
+    </div>
+  </div>
+
+  <div class="hobby-grid reveal">
+    <div class="hobby-card"><div class="ico">🩸</div><h4>Blood Donation</h4><p>Regular donor — showing up for something bigger than a resume line.</p></div>
+    <div class="hobby-card"><div class="ico">🚴</div><h4>Cycling</h4><p>Miles cleared on two wheels — the reset button between projects.</p></div>
+    <div class="hobby-card"><div class="ico">🧭</div><h4>Travelling</h4><p>Always chasing the next new place, one trip plan at a time.</p></div>
+    <div class="hobby-card"><div class="ico">🍳</div><h4>Daily New Dishes</h4><p>Learning one new recipe a day — the kitchen as a lab.</p></div>
+    <div class="hobby-card"><div class="ico">💡</div><h4>Business Ideas</h4><p>A running list of ventures sketched out daily, just to see what sticks.</p></div>
+    <div class="hobby-card"><div class="ico">📈</div><h4>Trading & Investing</h4><p>Tracking markets and building the habit of thinking in the long run.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-head reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title display">Patch Me In</h2>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-info reveal">
+      <p class="big">Got a shoot, a set, an event, or an idea to build? Let's get you on the schedule.</p>
+      <div class="info-line"><span class="dot"></span> <a href="mailto:djabishek0@gmail.com" style="text-decoration:none;">djabishek0@gmail.com</a></div>
+      <div class="info-line"><span class="dot"></span> Based in Coimbatore, Tamil Nadu, IN</div>
+      <div class="info-line"><span class="dot"></span> Usually replies within 24–48 hrs</div>
+    </div>
+    <form id="contactForm" class="reveal" action="https://formspree.io/f/mrenejeq" method="POST">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="_replyto" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required placeholder="Tell me about the gig, project, or idea..."></textarea>
+      </div>
+      <div class="submit-row">
+        <button type="submit" class="btn btn-solid">Send Message →</button>
+        <span class="form-status" id="formStatus"></span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div>© <span id="year"></span> Abishek Kumar — All channels live.</div>
+  <div class="socials">
+    <a href="mailto:djabishek0@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Build hero EQ bars
+const eq = document.querySelector('.hero-eq');
+if(eq){
+  const heights = [40,70,100,55,85,30,65,95,45,75];
+  heights.forEach((h,i)=>{
+    const el = document.createElement('div');
+    el.className = 'bar-el';
+    el.style.height = h + 'px';
+    el.style.animationDelay = (i*0.09) + 's';
+    el.style.animationDuration = (0.9 + Math.random()*0.8) + 's';
+    eq.appendChild(el);
+  });
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('is-visible');
+    }
+  });
+}, {threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// Trigger channel faders when console visible
+const channelObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      document.querySelectorAll('.channel').forEach((ch,i)=>{
+        setTimeout(()=> ch.classList.add('is-visible'), i*70);
+      });
+      channelObserver.disconnect();
+    }
+  });
+},{threshold:0.3});
+const consoleEl = document.getElementById('channels');
+if(consoleEl) channelObserver.observe(consoleEl);
+
+// Contact form via fetch (stay on page)
+const form = document.getElementById('contactForm');
+const status = document.getElementById('formStatus');
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  status.textContent = 'SENDING...';
+  const data = new FormData(form);
+  try{
+    const res = await fetch(form.action, {
+      method:'POST',
+      body:data,
+      headers:{'Accept':'application/json'}
+    });
+    if(res.ok){
+      status.textContent = 'MESSAGE SENT ✓';
+      form.reset();
+    } else {
+      status.textContent = 'SOMETHING WENT WRONG — TRY EMAIL DIRECTLY';
+    }
+  }catch(err){
+    status.textContent = 'SOMETHING WENT WRONG — TRY EMAIL DIRECTLY';
+  }
+});
+</script>
+
+</body>
+</html>
