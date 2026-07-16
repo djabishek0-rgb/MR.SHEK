@@ -172,6 +172,30 @@ section{padding:120px 5vw; position:relative; border-bottom:1px solid var(--line
   font-family:'JetBrains Mono',monospace; font-size:12px; padding:9px 14px; border:1px solid var(--line);
   border-radius:var(--radius); color:var(--paper-dim); letter-spacing:0.03em;
 }
+.profile-photo{
+  position:relative; margin-bottom:26px; overflow:hidden;
+  border:1px solid var(--line); background:var(--panel);
+}
+.profile-photo img{
+  width:100%; height:420px; object-fit:cover; object-position:center 20%;
+  filter:grayscale(0.15) contrast(1.05);
+  transition:transform 0.6s ease, filter 0.6s ease;
+}
+.profile-photo:hover img{transform:scale(1.04); filter:grayscale(0) contrast(1.1);}
+.profile-photo::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(11,13,15,0.55), transparent 45%);
+  pointer-events:none;
+}
+.profile-photo .tag-live{
+  position:absolute; top:16px; left:16px; z-index:2;
+  display:flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.1em;
+  background:rgba(11,13,15,0.7); backdrop-filter:blur(4px);
+  padding:7px 12px; border:1px solid var(--line); color:var(--paper);
+}
+.profile-photo .tag-live .rec-dot{width:7px; height:7px;}
+
 .spec-card{
   background:var(--panel); border:1px solid var(--line); padding:32px;
   position:relative;
@@ -338,13 +362,19 @@ footer a:hover{color:var(--amber);}
         <span class="badge">Event Leadership</span>
       </div>
     </div>
-    <div class="spec-card reveal">
+    <div class="reveal">
+      <div class="profile-photo">
+        <span class="tag-live"><span class="rec-dot"></span> LIVE SET</span>
+        <img src="assets/profile.webp" alt="Abishek Kumar playing keyboard with laptop, mixing music at night" loading="lazy">
+      </div>
+    <div class="spec-card">
       <div class="spec-row"><span class="k">Name</span><span class="v">Abishek Kumar</span></div>
       <div class="spec-row"><span class="k">Education</span><span class="v">BSc Computer Science</span></div>
       <div class="spec-row"><span class="k">Core Roles</span><span class="v">Creator · DJ · Chef</span></div>
       <div class="spec-row"><span class="k">Leadership</span><span class="v">Event Team Lead</span></div>
       <div class="spec-row"><span class="k">Focus</span><span class="v">AI / Prompt Engineering</span></div>
       <div class="spec-row"><span class="k">Status</span><span class="v" style="color:var(--cyan)">Available — Open to work</span></div>
+    </div>
     </div>
   </div>
 </section>
